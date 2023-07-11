@@ -16,7 +16,7 @@ plugins:
 
 functions:
   getUser:
-    handler: api.getUser
+    handler: api/getUser.getUserHandler
     name: get-user
     memorySize: 128 # MB
     timeout: 5 # seconds
@@ -31,7 +31,7 @@ functions:
         Resource: !GetAtt UsersTable.Arn
         
   createUser:
-    handler: api.putUser
+    handler: api/createUser.createUserHandler
     name: create-user
     memorySize: 128 # MB
     timeout: 5 # seconds
@@ -46,7 +46,7 @@ functions:
         Resource: !GetAtt UsersTable.Arn
       
   updateUser:
-    handler: api.putUser
+    handler: api/updateUser.updateUserHandler
     name: update-user
     memorySize: 128 # MB
     timeout: 5 # seconds
@@ -61,7 +61,7 @@ functions:
         Resource: !GetAtt UsersTable.Arn
       
   deleteUser:
-    handler: api.deleteUser
+    handler: api/deleteUser.deleteUserHandler
     name: delete-user
     memorySize: 128 # MB
     timeout: 5 # seconds
