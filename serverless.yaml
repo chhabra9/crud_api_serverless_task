@@ -31,7 +31,7 @@ functions:
         Resource: !GetAtt UsersTable.Arn
         
   createUser:
-    handler: index.handler
+    handler: api/createUser.handler
     name: create-user
     memorySize: 128 # MB
     timeout: 5 # seconds
