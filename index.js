@@ -1,6 +1,6 @@
 const { APIGatewayProxyHandler } = require('aws-lambda');
 
-const handler=(event, context) =>{
+module.exports.handler =async (event, context) =>{
     console.log("Event", event);
     return {
         statusCode: 200,
