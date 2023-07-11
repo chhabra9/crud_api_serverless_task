@@ -1,0 +1,92 @@
+service: dynamoDB-crud-api
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+  region: ap-south-1
+  environment: 
+    DynamoDB_TABLE_NAME: ${self:custom.userTableName}
+  
+custom: 
+  userTableName: user-table-${self:provider.stage}
+
+plugins:
+  - serverless-iam-roles-per-function
+
+functions:
+  getUser:
+    handler: api.getUser
+    name: get-user
+    memorySize: 128 # MB
+    timeout: 5 # seconds
+    events: 
+      - http: 
+          path: api/{userId}
+          method: GET
+    iamRoleStatements: 
+      - Effect: Allow
+        Action: 
+          - dynamodb:GetItem
+        Resource: !GetAtt UsersTable.Arn
+        
+  createUser:
+    handler: api.putUser
+    name: create-user
+    memorySize: 128 # MB
+    timeout: 5 # seconds
+    events: 
+      - http: 
+          path: api
+          method: POST
+    iamRoleStatements: 
+      - Effect: Allow
+        Action: 
+          - dynamodb:PutItem
+        Resource: !GetAtt UsersTable.Arn
+      
+  updateUser:
+    handler: api.putUser
+    name: update-user
+    memorySize: 128 # MB
+    timeout: 5 # seconds
+    events: 
+      - http: 
+          path: api/{userId}
+          method: PUT
+    iamRoleStatements: 
+      - Effect: Allow
+        Action: 
+          - dynamodb:UpdateItem
+        Resource: !GetAtt UsersTable.Arn
+      
+  deleteUser:
+    handler: api.deleteUser
+    name: delete-user
+    memorySize: 128 # MB
+    timeout: 5 # seconds
+    events: 
+      - http: 
+          path: api
+          method: DELETE
+    iamRoleStatements: 
+      - Effect: Allow
+        Action: 
+          - dynamodb:DeleteItem
+        Resource: !GetAtt UsersTable.Arn
+
+resources:
+  Resources:
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: users
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: N
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
